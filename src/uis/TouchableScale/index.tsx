@@ -1,8 +1,8 @@
-import React from 'react'
-import { StyleSheet, Text, View, ViewProps } from 'react-native'
+import React, { ReactNode } from 'react'
+import { StyleSheet, Text, View, ViewProps, StyleProp, ViewStyle } from 'react-native'
 import { TapGestureHandler, State, } from 'react-native-gesture-handler'
 import Animated, { Easing } from 'react-native-reanimated'
-import { onGestureEvent, bInterpolate } from 'react-native-redash'
+import { onGestureEvent, timing } from 'react-native-redash'
 
 const {
     eq,
@@ -15,75 +15,60 @@ const {
     set,
     or,
     Clock,
-    timing,
-    interpolate
+    interpolate,
+    and
 } = Animated
 
 type TouchableScaleProps = {
-    onPress: () => void;
-} & ViewProps
+    onPress?: () => void;
+    inDuration?: number;
+    outDuration?: number;
+    inEasing?: Animated.EasingFunction;
+    outEasing?: Animated.EasingFunction;
+    targetScale?: number;
+    children?: ReactNode;
+    style?: StyleProp<ViewStyle>;
+}
 
 
 const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
     const animation = new Value(0)
     const scale = interpolate(animation, {
         inputRange: [0, 1],
-        outputRange: [1, 0.5]
+        outputRange: [1, props.targetScale]
     })
-    console.log(scale)
-    const clock = new Clock()
     const state = new Value(State.UNDETERMINED);
-    const shouldScale = new Value(-1);
+    const shouldScale = new Value(0);
     const gestureHandler = onGestureEvent({ state })
-
 
     useCode(() =>
         block([
-            cond(eq(state, State.BEGAN), set(shouldScale, 1)),
-            cond(
-                or(eq(state, State.FAILED), eq(state, State.CANCELLED)),
-                set(shouldScale, 0)
-            ),
-            onChange(state, cond(eq(state, State.END), call([], props.onPress))),
+            // onChange(state, cond(eq(state, State.END), call([], () => props.onPress()))),
+            onChange(state, cond(eq(state, State.BEGAN), set(shouldScale, 1))),
             cond(
                 eq(shouldScale, 1),
                 set(
                     animation,
-                    timing(
-                        clock,
-                        {
-                            finished: new Value(0),
-                            position: new Value(0),
-                            time: new Value(0),
-                            frameTime: new Value(0)
-                        },
-                        {
-                            toValue: 1,
-                            duration: 250,
-                            easing: Easing.linear,
-                        }
-                    )
-                )
+                    timing({
+                        duration: props.inDuration,
+                        easing: props.inEasing,
+                        from: 0,
+                        to: 1,
+                    })
+                ),
             ),
+            cond(eq(animation, 1), set(shouldScale, 0)),
             cond(
                 eq(shouldScale, 0),
                 set(
                     animation,
-                    timing(
-                        clock,
-                        {
-                            finished: new Value(1),
-                            position: new Value(1),
-                            time: new Value(1),
-                            frameTime: new Value(1)
-                        },
-                        {
-                            toValue: 0,
-                            duration: 250,
-                            easing: Easing.linear,
-                        }
-                    )
-                )
+                    timing({
+                        duration: props.outDuration,
+                        easing: props.outEasing,
+                        from: 1,
+                        to: 0
+                    })
+                ),
             )
         ]),
         []
@@ -94,15 +79,24 @@ const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
             {...gestureHandler}
         >
             <Animated.View
-                {...props}
                 style={[
                     props.style,
                     { transform: [{ scale }] }
                 ]}
-            />
+            >
+                {props.children}
+            </Animated.View>
         </TapGestureHandler>
 
     )
+}
+TouchableScale.defaultProps = {
+    targetScale: 0.6,
+    onPress: () => { },
+    inEasing: Easing.inOut(Easing.ease),
+    outEasing: Easing.inOut(Easing.ease),
+    inDuration: 66,
+    outDuration: 133
 }
 
 export default TouchableScale
