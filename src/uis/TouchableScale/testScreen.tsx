@@ -14,15 +14,14 @@ const testScreen = () => {
     return (
         <View style={styles.container} >
             <TouchableScale
-                onPress={() => setVal(!val)}
+                onPress={() => onClick()}
             >
                 <View style={styles.button} >
-                    {/* {val ? */}
-                    <MaterialIcons name='call' size={28} color='#fff' />
-                    {/* : */}
-                    {/* <MaterialIcons name='translate' size={28} color='#fff' /> */}
-                    {/* } */}
-
+                    {val ?
+                        <MaterialIcons name='call' size={28} color='#fff' />
+                        :
+                        <MaterialIcons name='translate' size={28} color='#fff' />
+                    }
                 </View>
             </TouchableScale>
         </View>

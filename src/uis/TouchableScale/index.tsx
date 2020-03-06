@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { StyleSheet, Text, View, ViewProps, StyleProp, ViewStyle } from 'react-native'
 import { TapGestureHandler, State, } from 'react-native-gesture-handler'
 import Animated, { Easing } from 'react-native-reanimated'
@@ -16,7 +16,10 @@ const {
     or,
     Clock,
     interpolate,
-    and
+    and,
+    startClock,
+    neq,
+    stopClock
 } = Animated
 
 type TouchableScaleProps = {
@@ -33,50 +36,59 @@ type TouchableScaleProps = {
 
 const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
     const animation = new Value(0)
+    const clock = new Clock()
     const scale = interpolate(animation, {
         inputRange: [0, 1],
         outputRange: [1, props.targetScale]
     })
     const state = new Value(State.UNDETERMINED);
     const shouldScale = new Value(0);
-    const gestureHandler = onGestureEvent({ state })
 
-    useCode(() =>
-        block([
-            // onChange(state, cond(eq(state, State.END), call([], () => props.onPress()))),
-            onChange(state, cond(eq(state, State.BEGAN), set(shouldScale, 1))),
-            cond(
-                eq(shouldScale, 1),
-                set(
-                    animation,
-                    timing({
-                        duration: props.inDuration,
-                        easing: props.inEasing,
-                        from: 0,
-                        to: 1,
-                    })
-                ),
+
+    useCode(() => block([
+        onChange(state, cond(and(eq(state, State.BEGAN), eq(animation, 0)), [
+            set(shouldScale, 1),
+            // startClock(clock)
+        ]
+        )),
+        cond(
+            and(eq(shouldScale, 1), neq(animation, 1)),
+            set(
+                animation,
+                timing({
+                    duration: props.inDuration,
+                    easing: props.inEasing,
+                    from: 0,
+                    to: 1,
+                    // clock,
+                })
             ),
-            cond(eq(animation, 1), set(shouldScale, 0)),
-            cond(
-                eq(shouldScale, 0),
-                set(
-                    animation,
-                    timing({
-                        duration: props.outDuration,
-                        easing: props.outEasing,
-                        from: 1,
-                        to: 0
-                    })
-                ),
-            )
-        ]),
-        []
-    );
+        ),
+        cond(eq(animation, 1), set(shouldScale, 0)),
+        cond(
+            and(eq(shouldScale, 0), neq(animation, 0)),
+            set(
+                animation,
+                timing({
+                    // clock,
+                    duration: props.outDuration,
+                    easing: props.outEasing,
+                    from: 1,
+                    to: 0
+                })
+            ),
+        ),
+        // cond(and(eq(shouldScale, 0), eq(animation, 0)),stopClock(clock))
+    ]), []);
 
     return (
         <TapGestureHandler
-            {...gestureHandler}
+            onHandlerStateChange={({ nativeEvent }) => {
+                if (nativeEvent.state == State.END) {
+                    props.onPress()
+                }
+                state.setValue(nativeEvent.state)
+            }}
         >
             <Animated.View
                 style={[
