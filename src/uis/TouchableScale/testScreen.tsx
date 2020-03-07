@@ -4,24 +4,16 @@ import TouchableScale from '.'
 import { MaterialIcons } from '@expo/vector-icons';
 
 const testScreen = () => {
-    const [val, setVal] = useState(true)
-
-    const onClick = () => {
-        console.log(4)
-        setVal(!val)
-    }
+    const [count, setCount] = useState(0)
 
     return (
         <View style={styles.container} >
+            {/* <Text style={styles.count} >{count}</Text> */}
             <TouchableScale
-                onPress={() => onClick()}
+                onPress={() => setCount(count + 1)}
             >
                 <View style={styles.button} >
-                    {val ?
-                        <MaterialIcons name='call' size={28} color='#fff' />
-                        :
-                        <MaterialIcons name='translate' size={28} color='#fff' />
-                    }
+                    <MaterialIcons name='call' size={28} color='#fff' />
                 </View>
             </TouchableScale>
         </View>
@@ -44,5 +36,8 @@ const styles = StyleSheet.create({
         elevation: 4,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    count: {
+        marginBottom: 40
     }
 })

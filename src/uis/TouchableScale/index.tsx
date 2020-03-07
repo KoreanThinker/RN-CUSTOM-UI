@@ -1,8 +1,9 @@
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, ViewProps, StyleProp, ViewStyle } from 'react-native'
 import { TapGestureHandler, State, } from 'react-native-gesture-handler'
 import Animated, { Easing } from 'react-native-reanimated'
 import { onGestureEvent, timing } from 'react-native-redash'
+import { useMemoOne } from 'use-memo-one'
 
 const {
     eq,
@@ -35,20 +36,22 @@ type TouchableScaleProps = {
 
 
 const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
-    const animation = new Value(0)
-    const clock = new Clock()
+    const { animation, shouldScale, state } = useMemoOne(() => ({
+        animation: new Value(0),
+        shouldScale: new Value(0),
+        state: new Value(State.UNDETERMINED)
+    }), [])
+
     const scale = interpolate(animation, {
         inputRange: [0, 1],
         outputRange: [1, props.targetScale]
     })
-    const state = new Value(State.UNDETERMINED);
-    const shouldScale = new Value(0);
+
 
 
     useCode(() => block([
         onChange(state, cond(and(eq(state, State.BEGAN), eq(animation, 0)), [
             set(shouldScale, 1),
-            // startClock(clock)
         ]
         )),
         cond(
@@ -60,7 +63,6 @@ const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
                     easing: props.inEasing,
                     from: 0,
                     to: 1,
-                    // clock,
                 })
             ),
         ),
@@ -70,15 +72,13 @@ const TouchableScale: React.FC<TouchableScaleProps> = (props) => {
             set(
                 animation,
                 timing({
-                    // clock,
                     duration: props.outDuration,
                     easing: props.outEasing,
                     from: 1,
                     to: 0
                 })
             ),
-        ),
-        // cond(and(eq(shouldScale, 0), eq(animation, 0)),stopClock(clock))
+        )
     ]), []);
 
     return (

@@ -15,7 +15,7 @@ const AppContainer = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='RotateIndicator'
+                initialRouteName='TouchableScale'
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name='Home' component={HomeScreen} />
