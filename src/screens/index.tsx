@@ -7,7 +7,7 @@ import SeepAwayCarouselScreen from '../uis/SweepAwayCarousel/testScreen';
 import TouchableScale from '../uis/TouchableScale/testScreen';
 import RhombusIndicator from '../uis/RhombusIndicator/testScreen';
 import RotateIndicator from '../uis/RotateIndicator/testScreen'
-
+import FadeInView from '../uis/FadeInView/testScreen'
 
 const Stack = createStackNavigator();
 
@@ -15,7 +15,7 @@ const AppContainer = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='TouchableScale'
+                initialRouteName='FadeInView'
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name='Home' component={HomeScreen} />
@@ -23,6 +23,7 @@ const AppContainer = () => {
                 <Stack.Screen name="TouchableScale" component={TouchableScale} />
                 <Stack.Screen name="RhombusIndicator" component={RhombusIndicator} />
                 <Stack.Screen name="RotateIndicator" component={RotateIndicator} />
+                <Stack.Screen name="FadeInView" component={FadeInView} />
             </Stack.Navigator>
         </NavigationContainer>
     );
