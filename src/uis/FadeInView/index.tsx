@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react'
-import { View, Text, StyleProp, ViewStyle } from 'react-native'
+import React from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 import Animated, { Easing } from 'react-native-reanimated'
 import { useMemoOne } from 'use-memo-one';
-import { bInterpolate, delay } from 'react-native-redash';
+import { bInterpolate } from 'react-native-redash';
 
 const {
     Value,
