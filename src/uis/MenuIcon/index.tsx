@@ -1,137 +1,81 @@
-import React, { useMemo } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import Line from './Line'
-import Animated, { Easing } from 'react-native-reanimated'
-import { useMemoOne } from 'use-memo-one'
+import React, { useState, useEffect } from 'react'
+import { View, Animated, StyleSheet, Easing, TouchableWithoutFeedback, EasingFunction } from 'react-native'
 
-const {
-    cond,
-    useCode,
-    set,
-    block,
-    Clock,
-    Value,
-    startClock,
-    and,
-    eq,
-    stopClock,
-    timing,
-    neq,
-    interpolate,
-    Extrapolate,
-    createAnimatedComponent
-} = Animated
 
 
 interface MenuIconProps {
     size?: number,
     value: boolean,
     thickness?: number,
+    duration?: number,
+    onPress?: () => void,
+    easing?: EasingFunction
 }
 
-const runTiming = (clock: Animated.Clock, value: boolean) => {
-
-    const state = {
-        finished: new Value(0),
-        position: new Value(0),
-        time: new Value(0),
-        frameTime: new Value(0),
-    }
-
-    const config = {
-        duration: 1000,
-        easing: Easing.inOut(Easing.ease),
-        toValue: new Value(-1)
-    }
-
-    const open = new Value(value ? 1 : 0)
-
-    console.log(value)
-
-    return block([
-        cond(and(neq(config.toValue, 1), eq(open, 1)), [
-            set(state.finished, 0),
-            set(state.time, 0),
-            set(state.frameTime, 0),
-            set(config.toValue, 1),
-            startClock(clock)
-        ]),
-        cond(and(neq(config.toValue, 0), eq(open, 0)), [
-            set(state.finished, 0),
-            set(state.time, 0),
-            set(state.frameTime, 0),
-            set(config.toValue, 0),
-            startClock(clock)
-        ]),
-        timing(clock, state, config),
-        cond(state.finished, stopClock(clock)),
-        interpolate(state.position, {
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-            extrapolate: Extrapolate.CLAMP,
-        }),
-    ])
-}
 
 const MenuIcon: React.FC<MenuIconProps> = (props) => {
 
-    const animation = new Value(0)
-    const clock = new Clock()
+    const [animation] = useState(new Animated.Value(0))
 
+    useEffect(() => {
+        Animated.timing(animation, {
+            toValue: props.value ? 1 : 0,
+            duration: props.duration,
+            easing: props.easing
+        }).start()
+    }, [props.value])
 
-    useCode(() => block([
-        set(animation, runTiming(clock, !props.value))
-    ]), [props.value])
-
-    const opacity = interpolate(animation, {
-        inputRange: [0, 1],
-        outputRange: [1, 0]
+    const opacity2 = animation.interpolate({
+        inputRange: [0, 0.5, 0.501, 1],
+        outputRange: [1, 1, 0, 0]
     })
 
-    const pos1 = interpolate(animation, {
+    const pos1 = animation.interpolate({
         inputRange: [0, 0.5, 1],
-        outputRange: [-((props.size / 2) - (props.thickness / 2)), 0, 0]
+        outputRange: [-((props.size / 2) - (props.thickness / 2)), 0, 0],
     })
-    const pos3 = interpolate(animation, {
+    const pos3 = animation.interpolate({
         inputRange: [0, 0.5, 1],
         outputRange: [((props.size / 2) - (props.thickness / 2)), 0, 0]
     })
 
+
+    const rot1 = animation.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: ['0deg', '0deg', '45deg']
+    })
+    const rot3 = animation.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: ['0deg', '0deg', '-45deg']
+    })
+
     return (
-        <>
+        <TouchableWithoutFeedback onPress={props.onPress} >
             <View style={{ width: props.size, height: props.size, alignItems: 'center', justifyContent: 'center' }} >
-                <Animated.View style={[
-                    {
-                        backgroundColor: '#000',
-                        width: props.size,
-                        height: props.thickness,
-                        position: 'absolute',
-                    },
-                    {
-                        transform: [{ translateY: pos1 }]
-                    }
-                ]} />
+                <Animated.View style={{
+                    backgroundColor: '#000',
+                    width: props.size,
+                    height: props.thickness,
+                    position: 'absolute',
+                    transform: [{ rotateZ: rot1 }, { translateY: pos1 }]
+                }} />
                 <Animated.View style={[
                     styles.line,
                     {
                         width: props.size,
                         height: props.thickness,
-                        // transform: [{ translateY: -10 }]
+                        opacity: opacity2
                     }
                 ]} />
-                <Animated.View style={[
-                    {
-                        backgroundColor: '#000',
-                        width: props.size,
-                        height: props.thickness,
-                        position: 'absolute',
-                    },
-                    {
-                        transform: [{ translateY: pos3 }]
-                    }
-                ]} />
+                <Animated.View style={{
+                    backgroundColor: '#000',
+                    width: props.size,
+                    height: props.thickness,
+                    position: 'absolute',
+                    transform: [{ rotateZ: rot3 }, { translateY: pos3 }]
+                }} />
             </View>
-        </>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -144,7 +88,9 @@ const styles = StyleSheet.create({
 
 MenuIcon.defaultProps = {
     size: 24,
-    thickness: 2
+    thickness: 2,
+    duration: 500,
+    easing: Easing.inOut(Easing.ease)
 }
 
 export default MenuIcon

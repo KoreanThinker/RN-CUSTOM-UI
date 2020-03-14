@@ -8,16 +8,12 @@ const testScreen = () => {
 
     return (
         <View style={styles.container} >
-            <TouchableWithoutFeedback onPress={() => setMenu(!menu)} >
-                <View>
-                    <MenuIcon
-                        value={menu}
-                        size={24}
-                    />
-                </View>
-            </TouchableWithoutFeedback>
-
-            <Text style={{ marginTop: 20 }} >{menu ? '1' : '2'}</Text>
+            <MenuIcon
+                onPress={() => setMenu(!menu)}
+                value={menu}
+                size={48}
+                thickness={2.5}
+            />
         </View>
     )
 }

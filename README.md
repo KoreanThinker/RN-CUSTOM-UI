@@ -3,7 +3,7 @@
 
 
 # 이슈
-
+- 애니메이션 끈어질때는 expo 데이터 캐시 초기화
 
 # Reanimated
 - clock은 시간이 아니라 on off 기능인듯 startClock을 하면 timing이 진행되고 stopClock하면 timing이 멈춤
