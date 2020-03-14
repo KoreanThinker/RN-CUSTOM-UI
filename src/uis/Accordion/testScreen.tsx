@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, StyleSheet, TouchableWithoutFeedback, Animated } from 'react-native'
 import Accordion from '.'
-import Animated from 'react-native-reanimated'
 import { MaterialIcons } from '@expo/vector-icons'
 
 const LIST_ITEM_HEIGHT = 50
@@ -17,7 +16,7 @@ const testScreen = () => {
                 value={value}
                 listHeight={LIST_ITEM_HEIGHT * 5}
                 parentComponent={(animation) => {
-                    const rotate = Animated.interpolate(animation, {
+                    const rotate = animation.interpolate({
                         inputRange: [0, 1],
                         outputRange: [0, Math.PI]
                     })
