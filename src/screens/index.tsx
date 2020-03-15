@@ -9,6 +9,7 @@ import RotateIndicator from '../uis/RotateIndicator/testScreen';
 import FadeInView from '../uis/FadeInView/testScreen';
 import Accordion from '../uis/Accordion/testScreen';
 import MenuIcon from '../uis/MenuIcon/testScreen';
+import TossLoading from '../uis/TossLoading/testScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,7 +17,7 @@ const AppContainer = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='MenuIcon'
+                initialRouteName='TossLoading'
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name='Home' component={HomeScreen} />
@@ -26,6 +27,7 @@ const AppContainer = () => {
                 <Stack.Screen name="FadeInView" component={FadeInView} />
                 <Stack.Screen name="Accordion" component={Accordion} />
                 <Stack.Screen name="MenuIcon" component={MenuIcon} />
+                <Stack.Screen name="TossLoading" component={TossLoading} />
             </Stack.Navigator>
         </NavigationContainer>
     );
