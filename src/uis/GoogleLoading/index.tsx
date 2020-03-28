@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, Animated, EasingFunction, Easing, StyleSheet } from 'react-native'
 
 interface GoogleLoadingProps {
-    colors: string[];
-    easing: EasingFunction;
-    duration: number;
-    ballSize: number
+    colors?: string[];
+    easing?: EasingFunction;
+    duration?: number;
+    ballSize?: number;
+    distance?: number;
+    rotation?: number;
 }
 
 const GoogleLoading: React.FC<GoogleLoadingProps> = (props) => {
@@ -24,17 +26,34 @@ const GoogleLoading: React.FC<GoogleLoadingProps> = (props) => {
     }
 
 
-
     useEffect(() => {
         runAnimation()
     }, [])
 
     return (
-        <View>
+        <View style={{
+            transform: [{ rotate: props.rotation }]
+        }} >
             {props.colors.map((color, index) => {
-                const translate = animation.interpolate({
-                    inputRange: [],
-                    outputRange: []
+                const inputRange = []
+                const outputRangeX = []
+                const outputRangeY = []
+                const rangeLength = props.colors.length * 2
+                const colorLenght = props.colors.length
+
+                for (let i = 0; i <= rangeLength; i++) {
+                    inputRange.push(i / rangeLength)
+                    const ratio = ((i - 1) / 2 + index) / colorLenght
+                    outputRangeX.push(i % 2 == 0 ? 0 : props.distance * Math.cos(Math.PI * 2 * ratio))
+                    outputRangeY.push(i % 2 == 0 ? 0 : props.distance * Math.sin(Math.PI * 2 * ratio))
+                }
+                const translateX = animation.interpolate({
+                    inputRange,
+                    outputRange: outputRangeX
+                })
+                const translateY = animation.interpolate({
+                    inputRange,
+                    outputRange: outputRangeY
                 })
                 return <Animated.View key={index} style={{
                     position: 'absolute',
@@ -42,28 +61,23 @@ const GoogleLoading: React.FC<GoogleLoadingProps> = (props) => {
                     height: props.ballSize,
                     borderRadius: props.ballSize / 2,
                     backgroundColor: color,
-                    translateX: 8,
-                    translateY: 8,
-
+                    translateX,
+                    translateY
                 }} />
             })}
-
         </View>
     )
 }
 
 
-const styles = StyleSheet.create({
-    test: {
-    }
-})
-
 
 GoogleLoading.defaultProps = {
     colors: ['#4285F5', '#EA4436', '#FBBD06', '#34A952'],
-    duration: 4000,
+    duration: 2800,
     easing: Easing.linear,
-    ballSize: 8
+    ballSize: 8,
+    distance: 16,
+    rotation: Math.PI / 4
 }
 
 export default GoogleLoading
