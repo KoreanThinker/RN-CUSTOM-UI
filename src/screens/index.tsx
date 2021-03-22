@@ -18,7 +18,7 @@ const AppContainer = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='GoogleLoading'
+                initialRouteName='TossLoading'
                 screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name='Home' component={HomeScreen} />
