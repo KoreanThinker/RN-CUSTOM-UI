@@ -33,7 +33,8 @@ const TossLoading: React.FC<TossLoadingProps> = (props) => {
             Animated.timing(animation, {
                 toValue: 1,
                 duration: props.totalDuration,
-                easing: props.easing
+                easing: props.easing,
+                useNativeDriver: false,
             })
         ]).start(() => runAnimation())
     }

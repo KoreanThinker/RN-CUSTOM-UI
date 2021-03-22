@@ -12,7 +12,7 @@ const testScreen = () => {
                 <TossLoading
                     spac={3}
                     number={30}
-                    size={1}
+                    size={2}
                     delay={200}
                     translateY={20}
                     color='#000'

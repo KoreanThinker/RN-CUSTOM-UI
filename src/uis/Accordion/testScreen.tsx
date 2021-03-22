@@ -18,12 +18,12 @@ const testScreen = () => {
                 parentComponent={(animation) => {
                     const rotate = animation.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, Math.PI]
+                        outputRange: [0 + 'rad', Math.PI + 'rad']
                     })
                     return (
                         <View style={styles.parentContainer} >
                             <Text>Accordion</Text>
-                            <Animated.View style={{ transform: [{ rotate }] }} >
+                            <Animated.View style={{ transform: [{ rotate: rotate }] }} >
                                 <TouchableWithoutFeedback onPress={() => {
                                     setValue(!value)
                                 }} >

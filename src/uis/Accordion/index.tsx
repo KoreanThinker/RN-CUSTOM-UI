@@ -28,6 +28,7 @@ const Accordion: React.FC<AccordionProps> = (props) => {
         Animated.timing(animation, {
             toValue: props.value ? 1 : 0,
             duration: props.duration,
+            useNativeDriver: false,
         }).start()
     }, [props.value])
 

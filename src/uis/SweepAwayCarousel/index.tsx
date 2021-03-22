@@ -101,11 +101,11 @@ const SweepAwayCarousel: React.FC<SweepAwayCarouselProps> = (props) => {
                         }
                     ]}
                 >
-                    <Image
+                    {/* <Image
                         style={{ flex: 1 }}
                         source={{ uri: props.data[0] }}
                         resizeMode='cover'
-                    />
+                    /> */}
                 </Animated.View>
             </PanGestureHandler>
         </View>

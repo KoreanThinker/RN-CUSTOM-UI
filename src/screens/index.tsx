@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './HomeScreen';
-import SeepAwayCarouselScreen from '../uis/SweepAwayCarousel/testScreen';
+// import SeepAwayCarouselScreen from '../uis/SweepAwayCarousel/testScreen';
 import TouchableScale from '../uis/TouchableScale/testScreen';
 import RotateIndicator from '../uis/RotateIndicator/testScreen';
 import FadeInView from '../uis/FadeInView/testScreen';
@@ -18,11 +18,11 @@ const AppContainer = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='TossLoading'
-                screenOptions={{ headerShown: false }}
+                initialRouteName='Home'
+            // screenOptions={{ headerShown: false }}
             >
                 <Stack.Screen name='Home' component={HomeScreen} />
-                <Stack.Screen name="SweepAwayCarousel" component={SeepAwayCarouselScreen} />
+                {/* <Stack.Screen name="SweepAwayCarousel" component={SeepAwayCarouselScreen} /> */}
                 <Stack.Screen name="TouchableScale" component={TouchableScale} />
                 <Stack.Screen name="RotateIndicator" component={RotateIndicator} />
                 <Stack.Screen name="FadeInView" component={FadeInView} />

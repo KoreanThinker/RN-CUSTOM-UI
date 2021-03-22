@@ -20,7 +20,8 @@ const GoogleLoading: React.FC<GoogleLoadingProps> = (props) => {
             Animated.timing(animation, {
                 toValue: 1,
                 duration: props.duration,
-                easing: props.easing
+                easing: props.easing,
+                useNativeDriver: false
             })
         ]).start(() => runAnimation())
     }
@@ -32,7 +33,7 @@ const GoogleLoading: React.FC<GoogleLoadingProps> = (props) => {
 
     return (
         <View style={{
-            transform: [{ rotate: props.rotation }]
+            transform: [{ rotate: props.rotation.toString() + 'rad' }]
         }} >
             {props.colors.map((color, index) => {
                 const inputRange = []

@@ -21,7 +21,8 @@ const MenuIcon: React.FC<MenuIconProps> = (props) => {
         Animated.timing(animation, {
             toValue: props.value ? 1 : 0,
             duration: props.duration,
-            easing: props.easing
+            easing: props.easing,
+            useNativeDriver: false,
         }).start()
     }, [props.value])
 
